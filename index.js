@@ -34,6 +34,25 @@ app.get('/lego/:code', async (req, res) => {
     }
 });
 
+app.put('/lego/:id', async (req, res) => {
+    const { id } = req.params;
+    const { code, lego, set, task, pedido, completo, reemplazado } = req.body;
+
+    try {
+        const updateQuery = `
+            UPDATE lego
+            SET code = $1, lego = $2, set = $3, task = $4, pedido = $5, completo = $6, reemplazado = $7
+            WHERE id = $8
+        `;
+        const values = [code, lego, set, task, pedido, completo, reemplazado, id];
+        await pool.query(updateQuery, values);
+        res.json({ message: 'Datos actualizados exitosamente' });
+    } catch (error) {
+        console.error('Error al actualizar datos:', error);
+        res.status(500).json({ error: 'Error al actualizar datos' });
+    }
+})
+
 app.listen(port, () => {
     console.log(`Servidor corriendo en http://localhost:${port}/lego`);
 });
