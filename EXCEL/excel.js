@@ -36,7 +36,7 @@ async function readExcel(filePath) {
         CREATE TABLE lego (
             id SERIAL PRIMARY KEY,
             ${columns.map(col => `"${col}" text`).join(',\n')},
-            updated_at TIMESTAMP GENERATED ALWAYS AS (CURRENT_TIMESTAMP) STORED
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
     `;
 
