@@ -16,16 +16,19 @@ async function readExcel(filePath) {
 
     const worksheet = workbook.getWorksheet(1); // Primera hoja
     const rawColumns = worksheet.getRow(1).values.slice(1); // Encabezados
-    const columns = rawColumns.map(sanitizeColumnName);
+    let columns = rawColumns.map(sanitizeColumnName);
+    columns = columns.slice(1);
 
     console.log('Columnas:', columns);
 
     const data = [];
     worksheet.eachRow((row, rowNumber) => {
-        if (rowNumber > 1) { // Saltar encabezados
+        if (rowNumber > 1 && rowNumber < worksheet.rowCount) { // Saltar encabezados y última fila
             const rowData = {};
             row.eachCell((cell, colNumber) => {
-                rowData[columns[colNumber - 1]] = cell.value;
+                if (colNumber > 1) { // Omitir la primera columna
+                    rowData[columns[colNumber - 2]] = cell.value;
+                }
             });
             data.push(rowData);
         }
