@@ -44,7 +44,7 @@ app.put('/lego/:id', async (req, res) => {
             SET code = $1, lego = $2, set = $3, task = $4, pedido = $5, cant = $6, completo = $7, reemplazado = $8
             WHERE id = $9
         `;
-        const values = [code, lego, set, task, pedido, completo, reemplazado, id];
+        const values = [code, lego, set, task, pedido, cantidad, completo, reemplazado, id];
         await pool.query(updateQuery, values);
         res.json({ message: 'Datos actualizados exitosamente' });
     } catch (error) {
