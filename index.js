@@ -36,17 +36,17 @@ app.get('/lego/:code', async (req, res) => {
 
 app.put('/lego/:id', async (req, res) => {
     const { id } = req.params;
-    const { code, lego, set, task, pedido, cantidad, completo, reemplazado } = req.body;
+    const { code, lego, set, task, pedido, cant, completo, reemplazado } = req.body;
 
     try {
         const updateQuery = `
             UPDATE lego
             SET code = $1, lego = $2, set = $3, task = $4, pedido = $5, cant = $6, completo = $7, reemplazado = $8
-            WHERE id = $9
+            WHERE id = $9 RETURNING *
         `;
-        const values = [code, lego, set, task, pedido, cantidad, completo, reemplazado, id];
-        await pool.query(updateQuery, values);
-        res.json({ message: 'Datos actualizados exitosamente' });
+        const values = [code, lego, set, task, pedido, cant, completo, reemplazado, id];
+        const result = await pool.query(updateQuery, values);
+        res.json({ message: 'Datos actualizados exitosamente', data: result.rows[0] });
     } catch (error) {
         console.error('Error al actualizar datos:', error);
         res.status(500).json({ error: 'Error al actualizar datos' });
