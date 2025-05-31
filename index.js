@@ -36,13 +36,13 @@ app.get('/lego/:code', async (req, res) => {
 
 app.put('/lego/:id', async (req, res) => {
     const { id } = req.params;
-    const { code, lego, set, task, pedido, completo, reemplazado } = req.body;
+    const { code, lego, set, task, pedido, cantidad, completo, reemplazado } = req.body;
 
     try {
         const updateQuery = `
             UPDATE lego
-            SET code = $1, lego = $2, set = $3, task = $4, pedido = $5, completo = $6, reemplazado = $7
-            WHERE id = $8
+            SET code = $1, lego = $2, set = $3, task = $4, pedido = $5, cant = $6, completo = $7, reemplazado = $8
+            WHERE id = $9
         `;
         const values = [code, lego, set, task, pedido, completo, reemplazado, id];
         await pool.query(updateQuery, values);
@@ -50,6 +50,23 @@ app.put('/lego/:id', async (req, res) => {
     } catch (error) {
         console.error('Error al actualizar datos:', error);
         res.status(500).json({ error: 'Error al actualizar datos' });
+    }
+})
+
+app.post('/lego', async (req, res) => {
+    try {
+        const { code, lego, set, task, pedido, cantidad, completo, reemplazado } = req.body;
+        const insertQuery = `
+            INSERT INTO lego (code, lego, set, task, pedido, cant, completo, reemplazado)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        `;
+
+        const values = [code, lego, set, task, pedido, cantidad, completo, reemplazado];
+        await pool.query(insertQuery, values);
+        res.status(201).json({ message: 'Datos insertados exitosamente' });
+    } catch (error) {
+        console.error('Error al insertar datos:', error);
+        res.status(500).json({ error: 'Error al insertar datos' });
     }
 })
 
