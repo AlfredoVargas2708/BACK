@@ -70,6 +70,19 @@ app.post('/lego', async (req, res) => {
     }
 })
 
+app.delete('/lego/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deleteQuery = 'DELETE FROM lego WHERE id = $1';
+        await pool.query(deleteQuery, [id]);
+
+        res.json({ message: 'Datos eliminados exitosamente' });
+    } catch (error) {
+        console.error('Error al eliminar datos:', error);
+        res.status(500).json({ error: 'Error al eliminar datos' });
+    }
+})
+
 app.listen(port, () => {
     console.log(`Servidor corriendo en http://localhost:${port}/lego`);
 });
