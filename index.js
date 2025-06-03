@@ -10,7 +10,6 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get('/lego', async (req, res) => {
-    console.log('Recibiendo solicitud GET en /lego');
     try {
         const result = await pool.query('SELECT * FROM lego');
         res.json(result.rows);
