@@ -63,4 +63,19 @@ async function readExcel(filePath) {
     }
 }
 
-readExcel('./Lego.xlsx');
+async function updateLego() {
+    try {
+        const selectQuery = `
+            SELECT * FROM lego
+            WHERE lego = '41092-2'
+        `;
+        const result = await pool.query(selectQuery);
+        console.log('Datos seleccionados exitosamente:', result.rows);
+    } catch (error) {
+        console.error('Error al actualizar datos:', error);
+    }
+} 
+
+updateLego();
+
+//readExcel('./Lego.xlsx');

@@ -19,6 +19,16 @@ app.get('/lego', async (req, res) => {
     }
 });
 
+app.get('/lego/images', async (req, res) => {
+    const legos = await pool.query('SELECT * FROM lego_sets ORDER BY id DESC');
+
+    try {
+        res.status(200).json(legos.rows);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener la imagen del set de LEGO' });
+    }
+});
+
 app.get('/lego/:code', async (req, res) => {
     const code = req.params.code;
     try {
