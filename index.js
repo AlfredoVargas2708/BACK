@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 
 app.get('/lego', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM lego');
+        const result = await pool.query('SELECT * FROM lego ORDER BY id DESC');
         res.json(result.rows);
     } catch (error) {
         console.error('Error al obtener datos:', error);
