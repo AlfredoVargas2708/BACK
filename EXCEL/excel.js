@@ -38,8 +38,7 @@ async function readExcel(filePath) {
         DROP TABLE IF EXISTS lego;
         CREATE TABLE lego (
             id SERIAL PRIMARY KEY,
-            ${columns.map(col => `"${col}" text`).join(',\n')},
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ${columns.map(col => `"${col}" text`).join(',\n')}
         );
     `;
 
@@ -55,6 +54,7 @@ async function readExcel(filePath) {
 
     try {
         await pool.query(insertQuery);
+
         console.log('Datos insertados exitosamente');
     } catch (error) {
         console.error('Error al insertar datos:', error);
