@@ -19,6 +19,23 @@ app.get('/lego', async (req, res) => {
     }
 });
 
+app.get('/lego/category/:category/:value', async (req, res) => {
+    try {
+        const category = req.params.category;
+        const value = req.params.value;
+        const result = await pool.query('SELECT * FROM lego WHERE ' + category + ' = $1 ORDER BY id DESC', [value]);
+
+        if (result.rows.length > 0) {
+            res.json(result.rows);
+        } else {
+            res.status(404).json({ error: 'No se encontraron datos para esta categoría' });
+        }
+    } catch (error) {
+        console.error('Error al obtener datos por categoría:', error);
+        res.status(500).json({ error: 'Error al obtener datos por categoría' });
+    }
+})
+
 app.get('/lego/images', async (req, res) => {
     const legos = await pool.query('SELECT * FROM lego_sets ORDER BY id DESC');
 
