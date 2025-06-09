@@ -72,7 +72,7 @@ app.get('/lego/pieces/:code', async (req, res) => {
     }
 });
 
-app.put('/lego/:id', async (req, res) => {
+app.put('/lego/pieces/:id', async (req, res) => {
     const { id } = req.params;
     const { code, lego, set, task, pedido, cant, completo, reemplazado } = req.body;
 
@@ -91,7 +91,7 @@ app.put('/lego/:id', async (req, res) => {
     }
 })
 
-app.post('/lego', async (req, res) => {
+app.post('/lego/pieces', async (req, res) => {
     try {
         const { code, lego, set, task, pedido, cantidad, completo, reemplazado } = req.body;
         const insertQuery = `
