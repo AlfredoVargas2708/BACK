@@ -93,13 +93,13 @@ app.put('/lego/pieces/:id', async (req, res) => {
 
 app.post('/lego/pieces', async (req, res) => {
     try {
-        const { code, lego, set, task, pedido, cantidad, completo, reemplazado } = req.body;
+        const { code, lego, set, task, pedido, cant, completo, reemplazado } = req.body;
         const insertQuery = `
             INSERT INTO lego (code, lego, set, task, pedido, cant, completo, reemplazado)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         `;
 
-        const values = [code, lego, set, task, pedido, cantidad, completo, reemplazado];
+        const values = [code, lego, set, task, pedido, cant, completo, reemplazado];
         await pool.query(insertQuery, values);
         res.status(201).json({ message: 'Datos insertados exitosamente' });
     } catch (error) {
