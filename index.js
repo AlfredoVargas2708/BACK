@@ -19,6 +19,27 @@ app.get('/lego', async (req, res) => {
     }
 });
 
+app.get('/lego/images', async (req, res) => {
+    const legos = await pool.query('SELECT * FROM lego_sets ORDER BY id DESC');
+
+    try {
+        res.status(200).json(legos.rows);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener la imagen del set de LEGO' });
+    }
+});
+
+app.get('/lego/options', async (req, res) => {
+    const { category } = req.query;
+    try {
+        const result = await pool.query('SELECT DISTINCT ' + category + ' FROM lego ORDER BY ' + category);
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error al obtener opciones:', error);
+        res.status(500).json({ error: 'Error al obtener opciones' });
+    }
+})
+
 app.get('/lego/category/:category/:value', async (req, res) => {
     try {
         const category = req.params.category;
@@ -35,16 +56,6 @@ app.get('/lego/category/:category/:value', async (req, res) => {
         res.status(500).json({ error: 'Error al obtener datos por categoría' });
     }
 })
-
-app.get('/lego/images', async (req, res) => {
-    const legos = await pool.query('SELECT * FROM lego_sets ORDER BY id DESC');
-
-    try {
-        res.status(200).json(legos.rows);
-    } catch (error) {
-        res.status(500).json({ error: 'Error al obtener la imagen del set de LEGO' });
-    }
-});
 
 app.get('/lego/:code', async (req, res) => {
     const code = req.params.code;
