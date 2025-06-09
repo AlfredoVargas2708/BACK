@@ -57,7 +57,7 @@ app.get('/lego/category/:category/:value', async (req, res) => {
     }
 })
 
-app.get('/lego/:code', async (req, res) => {
+app.get('/lego/pieces/:code', async (req, res) => {
     const code = req.params.code;
     try {
         const result = await pool.query('SELECT * FROM lego WHERE code LIKE $1', [`%${code}%`]);
