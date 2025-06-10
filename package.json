@@ -20,7 +20,7 @@
     "express": "^5.1.0",
     "node-cache": "^5.1.2",
     "nodemon": "^3.1.10",
-    "p-limit": "^6.2.0",
+    "p-limit": "^3.1.0",
     "pg": "^8.16.0",
     "pg-format": "^1.0.4",
     "puppeteer": "^24.10.0"
