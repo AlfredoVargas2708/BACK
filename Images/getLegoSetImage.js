@@ -1,11 +1,11 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-const url = "https://www.lego.com/es-ar/service/building-instructions/";
+const setUrl = "https://www.lego.com/es-ar/service/building-instructions/";
 
 async function getLegoSetImage(code) {
     try {
-        const response = await axios.get(`${url}${code}`);
+        const response = await axios.get(`${setUrl}${code}`);
         const $ = cheerio.load(response.data);
 
         // Buscar la imagen dentro del picture con el atributo data-test="set-image"
@@ -17,8 +17,7 @@ async function getLegoSetImage(code) {
             throw new Error('Imagen no encontrada');
         }
     } catch (error) {
-        console.error('Error al obtener la imagen del set de LEGO:', error.message);
-        throw error;
+        throw new Error(`No se pudo obtener la imagen para el set LEGO ${code}`);
     }
 }
 
