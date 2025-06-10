@@ -40,10 +40,13 @@ app.get('/lego/options', async (req, res) => {
     }
 })
 
-app.get('/lego/category/:category/:value', async (req, res) => {
+app.get('/lego/pieces/category', async (req, res) => {
     try {
-        const category = req.params.category;
-        const value = req.params.value;
+        const category = req.query.category;
+        const value = req.query.value;
+        if (!category || !value) {
+            return res.status(400).json({ error: 'Faltan parámetros de categoría o valor' });
+        }
         const result = await pool.query('SELECT * FROM lego WHERE ' + category + ' = $1 ORDER BY id DESC', [value]);
 
         if (result.rows.length > 0) {
@@ -57,8 +60,8 @@ app.get('/lego/category/:category/:value', async (req, res) => {
     }
 })
 
-app.get('/lego/pieces/:code', async (req, res) => {
-    const code = req.params.code;
+app.get('/lego/pieces/code', async (req, res) => {
+    const code = req.query.code;
     try {
         const result = await pool.query('SELECT * FROM lego WHERE code LIKE $1', [`%${code}%`]);
         if (result.rows.length > 0) {
@@ -108,7 +111,7 @@ app.post('/lego/pieces', async (req, res) => {
     }
 })
 
-app.delete('/lego/:id', async (req, res) => {
+app.delete('/lego/pieces/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const deleteQuery = 'DELETE FROM lego WHERE id = $1';
