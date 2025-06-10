@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const pool = require('./Database/db');
+const getLegoSetImage = require('./Images/getLegoSetImage');
 
 const app = express();
 const port = 3000;
@@ -25,6 +26,24 @@ app.get('/lego/images', async (req, res) => {
     try {
         res.status(200).json(legos.rows);
     } catch (error) {
+        res.status(500).json({ error: 'Error al obtener la imagen del set de LEGO' });
+    }
+});
+
+app.get('/lego/images/new/:setId', async (req, res) => {
+    try {
+        const { setId } = req.params;
+        console.log('Obteniendo imagen para el set:', setId);
+/*         const imageUrl = await getLegoSetImage(setId);
+
+        const addQuery = await pool.query('INSERT INTO lego_sets (code_sets, image_set) VALUES ($1, $2)', [setId, imageUrl]);
+        if (addQuery.rowCount === 0) {
+            return res.status(404).json({ error: 'Set no encontrado o ya existe' });
+        }
+
+        res.status(200).json({ imageUrl }); */
+    } catch (error) {
+        console.error('Error al obtener la imagen del set de LEGO:', error);
         res.status(500).json({ error: 'Error al obtener la imagen del set de LEGO' });
     }
 });
