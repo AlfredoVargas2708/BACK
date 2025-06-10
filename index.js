@@ -31,9 +31,6 @@ app.get('/lego/images', async (req, res) => {
 
 app.get('/lego/options', async (req, res) => {
     const { category } = req.query;
-    if (!category) {
-        return res.status(400).json({ error: 'Falta el parámetro de categoría' });
-    }
     try {
         const result = await pool.query('SELECT DISTINCT ' + category + ' FROM lego ORDER BY ' + category);
         res.json(result.rows);
@@ -47,9 +44,6 @@ app.get('/lego/pieces/category', async (req, res) => {
     try {
         const category = req.query.category;
         const value = req.query.value;
-        if (!category || !value) {
-            return res.status(400).json({ error: 'Faltan parámetros de categoría o valor' });
-        }
         const result = await pool.query('SELECT * FROM lego WHERE ' + category + ' = $1 ORDER BY id DESC', [value]);
 
         if (result.rows.length > 0) {
@@ -66,9 +60,6 @@ app.get('/lego/pieces/category', async (req, res) => {
 app.get('/lego/pieces/code', async (req, res) => {
     try {
         const code = req.query.code;
-        if (!code) {
-            return res.status(400).json({ error: 'Falta el parámetro de código' });
-        }
         const result = await pool.query('SELECT * FROM lego WHERE code LIKE $1', [`%${code}%`]);
         if (result.rows.length > 0) {
             res.json(result.rows);
@@ -85,10 +76,6 @@ app.put('/lego/pieces/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const { code, lego, set, task, pedido, cant, completo, reemplazado } = req.body;
-
-        if (!id || !code || !lego || !set || !task || !pedido || !cant || !completo || !reemplazado) {
-            return res.status(400).json({ error: 'Faltan datos para actualizar' });
-        }
         const updateQuery = `
             UPDATE lego
             SET code = $1, lego = $2, set = $3, task = $4, pedido = $5, cant = $6, completo = $7, reemplazado = $8
@@ -106,9 +93,6 @@ app.put('/lego/pieces/:id', async (req, res) => {
 app.post('/lego/pieces', async (req, res) => {
     try {
         const { code, lego, set, task, pedido, cant, completo, reemplazado } = req.body;
-        if (!code || !lego || !set || !task || !pedido || !cant || !completo || !reemplazado) {
-            return res.status(400).json({ error: 'Faltan datos para insertar' });
-        }
         const insertQuery = `
             INSERT INTO lego (code, lego, set, task, pedido, cant, completo, reemplazado)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
@@ -126,9 +110,6 @@ app.post('/lego/pieces', async (req, res) => {
 app.delete('/lego/pieces/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        if (!id) {
-            return res.status(400).json({ error: 'Falta el ID para eliminar' });
-        }
         const deleteQuery = 'DELETE FROM lego WHERE id = $1';
         await pool.query(deleteQuery, [id]);
 
