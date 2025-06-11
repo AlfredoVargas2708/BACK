@@ -37,19 +37,6 @@ const handleDatabaseError = (res, error, customMessage) => {
     res.status(500).json({ error: customMessage });
 };
 
-// Helper function to process Lego images
-const processLegoImages = async (legoItems) => {
-    return Promise.all(legoItems.map(async (lego) => {
-        try {
-            const imageSet = await getLegoSetImage(lego.lego);
-            const imagePiece = `${BASE_LEGO_IMAGE_URL}/${lego.code}.jpg`;
-            return { ...lego, imageSet, imagePiece };
-        } catch (error) {
-            return { ...lego, imageSet: null, imagePiece: null };
-        }
-    }));
-};
-
 // Routes
 app.get('/lego/options', async (req, res) => {
     try {
@@ -84,7 +71,7 @@ app.get('/lego', async (req, res) => {
       ORDER BY ${searchBy} ASC;
     `;
 
-        const result = await pool.query(query, [searchValue]);
+        let result = await pool.query(query, [searchValue]);
 
         if (result.rows.length === 0) {
             return res.status(404).json({ error: ERROR_MESSAGES.LEGO.NOT_FOUND });
@@ -104,9 +91,22 @@ app.get('/lego', async (req, res) => {
                 imagePiece: `${BASE_LEGO_IMAGE_URL}/${lego.code}.jpg`
             }));
             res.json(legoWithSetImages);
-        }else if(Object.keys(countOfLegoSets).length > 1) {
-            const legoItems = await processLegoImages(result.rows);
-            res.json(legoItems);
+        } else if (Object.keys(countOfLegoSets).length > 1) {
+            let legoSets = Object.keys(countOfLegoSets);
+            legoSets = await Promise.all(legoSets.map(async (legoSet) => {
+                const legoWithSetImage = legoSet === '' ? '' : await getLegoSetImage(legoSet);
+                return {
+                    lego: legoSet,
+                    imageSet: legoWithSetImage,
+                    count: countOfLegoSets[legoSet]
+                };
+            }));
+            result.rows = result.rows.map(lego => ({
+                ...lego,
+                imageSet: legoSets.find(set => set.lego === lego.lego)?.imageSet || '',
+                imagePiece: `${BASE_LEGO_IMAGE_URL}/${lego.code}.jpg`
+            }));
+            res.json(result.rows);
         }
     } catch (error) {
         handleDatabaseError(res, error, ERROR_MESSAGES.SERVER.ERROR);
