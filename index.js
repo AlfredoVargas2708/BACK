@@ -9,7 +9,10 @@ const PORT = 3000;
 const BASE_LEGO_IMAGE_URL = 'https://www.lego.com/cdn/product-assets/element.img.photoreal.192x192';
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+    origin: 'https://piezas-de-lego.vercel.app', // Cambia esto al origen correcto de tu frontend
+    credentials: true
+}));
 app.use(bodyParser.json());
 
 // Constants for error messages
