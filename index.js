@@ -90,8 +90,24 @@ app.get('/lego', async (req, res) => {
             return res.status(404).json({ error: ERROR_MESSAGES.LEGO.NOT_FOUND });
         }
 
-        const legoWithSetImages = await processLegoImages(result.rows);
-        res.json(legoWithSetImages);
+        const countOfLegoSets = result.rows.reduce((acc, lego) => {
+            acc[lego.lego] = (acc[lego.lego] || 0) + 1;
+            return acc;
+        }, {})
+
+        if (Object.keys(countOfLegoSets).length === 1) {
+            const legoSet = Object.keys(countOfLegoSets)[0];
+            const legoWithSetImage = await getLegoSetImage(legoSet);
+            const legoWithSetImages = result.rows.map(lego => ({
+                ...lego,
+                imageSet: legoWithSetImage,
+                imagePiece: `${BASE_LEGO_IMAGE_URL}/${lego.code}.jpg`
+            }));
+            res.json(legoWithSetImages);
+        }else if(Object.keys(countOfLegoSets).length > 1) {
+            const legoItems = await processLegoImages(result.rows);
+            res.json(legoItems);
+        }
     } catch (error) {
         handleDatabaseError(res, error, ERROR_MESSAGES.SERVER.ERROR);
     }
