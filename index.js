@@ -87,13 +87,21 @@ app.get('/lego', async (req, res) => {
 
         if (Object.keys(countOfLegoSets).length === 1) {
             const legoSet = Object.keys(countOfLegoSets)[0];
-            const legoWithSetImage = await getLegoSetImage(legoSet);
-            const legoWithSetImages = result.rows.map(lego => ({
-                ...lego,
-                imageSet: legoWithSetImage,
-                imagePiece: `${BASE_LEGO_IMAGE_URL}/${lego.code}.jpg`
-            }));
-            res.json(legoWithSetImages);
+            if(legoSet === '') {
+                res.json(result.rows.map(lego => ({
+                    ...lego,
+                    imageSet: '',
+                    imagePiece: `${BASE_LEGO_IMAGE_URL}/${lego.code}.jpg`
+                })));
+            }else {
+                const legoWithSetImage = await getLegoSetImage(legoSet);
+                const legoWithSetImages = result.rows.map(lego => ({
+                    ...lego,
+                    imageSet: legoWithSetImage,
+                    imagePiece: `${BASE_LEGO_IMAGE_URL}/${lego.code}.jpg`
+                }));
+                res.json(legoWithSetImages);
+            }
         } else if (Object.keys(countOfLegoSets).length > 1) {
             let legoSets = Object.keys(countOfLegoSets);
             legoSets = await Promise.all(legoSets.map(async (legoSet) => {
