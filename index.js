@@ -182,6 +182,23 @@ app.put('/lego/:id', async (req, res) => {
     }
 });
 
+app.delete('/lego/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const deleteQuery = `
+            DELETE FROM lego
+            WHERE id = $1`;
+        const result = await pool.query(deleteQuery, [id]);
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: ERROR_MESSAGES.LEGO.NOT_FOUND_ID });
+        }
+        res.json({ message: 'Set de LEGO eliminado exitosamente' });
+    } catch (error) {
+        handleDatabaseError(res, error, ERROR_MESSAGES.SERVER.ERROR);
+    }
+})
+
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}/lego`);
 });
