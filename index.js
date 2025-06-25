@@ -9,7 +9,11 @@ const PORT = 3000;
 const BASE_LEGO_IMAGE_URL = 'https://www.lego.com/cdn/product-assets/element.img.photoreal.192x192';
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(bodyParser.json());
 
 // Constants for error messages
